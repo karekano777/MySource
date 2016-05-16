@@ -56,17 +56,30 @@ int main(int arg, char* argv)
 	}
 	fclose(fp);
 
-	CLayer Layer1;
+	CLayer Layer1(3,3);
+	CLayer Layer2(3,3);
+	CLayer Layer3(3,3);
+	CLayer Layer4(3,1);
+	CLayer Layer5(1,3);
+	CLayer Layer6(3,2);
+	CLayer Layer7(2,4);
 	CMultilayer CMLayer;
 
 	CMLayer.pushLayer(&Layer1);
+	CMLayer.pushLayer(&Layer2);
+	CMLayer.pushLayer(&Layer3);
+	CMLayer.pushLayer(&Layer4);
+	CMLayer.pushLayer(&Layer5);
+	CMLayer.pushLayer(&Layer6);
+	CMLayer.pushLayer(&Layer7);
+
 	CMLayer.setTrainingSets(mXData, mYData);
 	
 	CPerceptron Perceptron;
 	Perceptron.setActiveFunc(SIGMOD);
 	Perceptron.setSolver(SGD);
-	Perceptron.setCondition(0.0001, 10000000);
-	Perceptron.setLearningRate(0.1);
+	Perceptron.setCondition(0.00001, 50000);
+	Perceptron.setLearningRate(0.5);
 	Perceptron.m_vMultilayer.push_back(CMLayer);
 	Perceptron.Learning();
 

@@ -24,12 +24,16 @@ public:
 
 	CLayer* getLayer()
 	{
-		if ((iter>=0) && (iter<m_vLayer.size()))
+		if ((iter>=0) && (iter<(int)m_vLayer.size()))
+		{
 			return m_vLayer[iter];
+		}
 		return NULL;
 	}
 
-	void updateLayer(CLayer* Layer, int i) { m_vLayer[i-1] = Layer; }
+	void updateLayer(CLayer* Layer, int i) { 
+		m_vLayer[i-1] = Layer;
+	}
 
 	void setTrainingSets(Matrix X, Matrix Y)
 	{
@@ -39,12 +43,16 @@ public:
 
 	void updateTrainingData(int i)
 	{
-		CLayer* layer = m_vLayer[0];
+		for (int iLayer=0; iLayer<(int)m_vLayer.size(); iLayer++)
+		{
+			CLayer* layer = m_vLayer[iLayer];
 
-		layer->setInputVector(m_matSetX.Column(i));
-		layer->setTargetVector(m_matSetY.Column(i));
+			if (iLayer == 0)
+				layer->setInputVector(m_matSetX.Column(i));
 
-		m_vLayer[0] = layer;
+			layer->setTargetVector(m_matSetY.Column(i));
+			m_vLayer[iLayer] = layer;
+		}
 	}
 
 	bool gotoFirstLayer()
@@ -86,7 +94,7 @@ public:
 
 	bool nextLayer()
 	{
-		if ((iter>-1) && (iter < m_vLayer.size()))
+		if ((iter>-1) && (iter < (int)m_vLayer.size()))
 		{
 			iter++;
 			return true;
@@ -97,14 +105,16 @@ public:
 		}
 	}
 
-	bool isFirstLayer() { return (iter==0)? true : false; }
+	bool isFirstLayer() { return (iter==-1)? true : false; }
 	bool isEndLayer() { return (iter==m_vLayer.size())? true : false; }
 
 	int getTrainingNumber() { return min(m_matSetX.Ncols(), m_matSetY.Ncols()); }
 	int getLayerNumber() { return m_vLayer.size(); }
 
-private:
+	int getiLayer() { return iter; }
 	std::vector<CLayer*> m_vLayer;
+
+private:
 
 	Matrix m_matSetX;
 	Matrix m_matSetY;

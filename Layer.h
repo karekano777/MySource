@@ -13,6 +13,7 @@ class CLayer
 {
 public:
 	CLayer(void);
+	CLayer(int nInput, int nOutput);
 	~CLayer(void);
 
 public:
@@ -47,7 +48,6 @@ public:
 			for (int j=1; j<=m_matWeight.Ncols(); j++)
 			{
 				m_matWeight(i,j) = (double)rand() / (double)RAND_MAX;
-				//m_matWeight(i,j) = 1.0;
 			}
 		}
 	}
@@ -56,11 +56,18 @@ public:
 	void setWeightEntry(int i, int j, double value) { m_matWeight(i, j) = value; }
 	double getWeightEntry(int i, int j) { return m_matWeight(i, j); }
 
-	int getSizeOfInput() { return m_vecInput.Nrows(); }
-	//int getSizeOfOutput() { return m_vecOutput.Nrows(); }
-	int getSizeOfOutput() { return m_vecInput.Nrows(); }
+	int getSizeOfInput() { return m_nInput; }
+	int getSizeOfOutput() { return m_nOutput; }
+
+	void setInputNumber(int n) { m_nInput = n; }
+	int getInputNumber() { return m_nInput; }
+	void setOutputNumber(int n) { m_nOutput = n; }
+	int getOutputNumber() { return m_nOutput; }
 
 private:
+	int m_nInput;
+	int m_nOutput;
+
 	ColumnVector m_vecInput;
 	ColumnVector m_vecNet;
 	ColumnVector m_vecOutput;

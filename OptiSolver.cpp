@@ -18,7 +18,7 @@ void StochasticGradientDescent(pFunc Derivative, CLayer* Layer, double rate, Mat
 
 		for (int j = 1; j<=vWeight.Nrows(); j++)
 		{
-			Weight(i,j) = vWeight(j);
+			Weight(j,i) = vWeight(j);
 		}
 	}
 

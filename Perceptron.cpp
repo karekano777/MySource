@@ -20,7 +20,6 @@ void CPerceptron::ForwardPropagation(CMultilayer* Layers)
 	for (int iLayer=1; iLayer<=Layers->getLayerNumber(); iLayer++)
 	{
 		ColumnVector vXData = Layer->getInputVector();
-		
 		int nYSize = Layer->getSizeOfOutput();
 		ColumnVector vYhat;
 		vYhat.ReSize(nYSize, 1);
@@ -50,7 +49,7 @@ void CPerceptron::ForwardPropagation(CMultilayer* Layers)
 
 		Layer->setNetVector(vNet);
 		Layer->setOutputVector(vYhat);
-		Layers->updateLayer(Layer, iLayer);
+		//Layers->updateLayer(Layer, iLayer);
 
 		ColumnVector vTarget = Layer->getTargetVector();
 		Layers->nextLayer();
@@ -58,7 +57,6 @@ void CPerceptron::ForwardPropagation(CMultilayer* Layers)
 		{
 			Layer = Layers->getLayer();
 			Layer->setInputVector(vYhat);
-			Layer->setTargetVector(vTarget);
 		}
 	}
 }
@@ -75,12 +73,11 @@ void CPerceptron::BackwardPropagation(CMultilayer* Layers)
 		Weight = Layer->getWeightMatrix();
 
 		m_solver(m_active.pDerivative, Layer, m_rate, Weight);
-		Layers->updateLayer(Layer, iLayer);
+		//Layers->updateLayer(Layer, iLayer);
 
 		Layers->preLayer();
-		if (!Layers->isEndLayer())
+		if (!Layers->isFirstLayer())
 		{
-			Layers->preLayer();
 			Layer = Layers->getLayer();
 		}
 	}
@@ -98,22 +95,25 @@ void CPerceptron::Learning()
 			Layers->updateTrainingData(iSet);
 			for (int iter = 1; iter<=m_itermax; iter++)
 			{
-				if (iter == 1)
+				if (iSet == 1&& iter == 1)
 				{
+					Layers->gotoFirstLayer();
 					for (int iLayer=1; iLayer<=Layers->getLayerNumber(); iLayer++)
 					{
 						CLayer* Layer = Layers->getLayer();
 						Layer->InitialWeight();
-						Layers->updateLayer(Layer, iLayer);
+						Layers->nextLayer();
+						//Layers->updateLayer(Layer, iLayer);
 					}
 				}
 
 				ForwardPropagation(Layers);
 				BackwardPropagation(Layers);
 
-				if (!(Layers->isEndLayer()))
-					Layers->gotoEndLayer();
+				//if (!(Layers->isEndLayer()))
+				//	Layers->gotoEndLayer();
 
+				Layers->gotoEndLayer();
 				CLayer* Layer = Layers->getLayer();
 				ColumnVector vTarget = Layer->getTargetVector();
 				ColumnVector vYhat = Layer->getOutputVector();
