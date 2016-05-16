@@ -9,10 +9,10 @@
 
 typedef double (*pFunc)(double);
 
-void StochasticGradientDescent(pFunc Derivative, CLayer* Layer, double rate, Matrix Weight);
-void NewtonGaussian(pFunc Derivative, CLayer* Layer, double rate, Matrix Weight);
-void LevenbergMarquardt1(pFunc Derivative, CLayer* Layer, double rate, Matrix Weight);
-void LevenbergMarquardt2(pFunc Derivative, CLayer* Layer, double rate, Matrix Weight);
-void ConjugateGradient(pFunc Derivative, CLayer* Layer, double rate, Matrix Weight);
+void StochasticGradientDescent(pFunc Derivative, CLayer* Layer, double rate);
+void NewtonGaussian(pFunc Derivative, CLayer* Layer, double rate);
+void LevenbergMarquardt1(pFunc Derivative, CLayer* Layer, double rate);
+void LevenbergMarquardt2(pFunc Derivative, CLayer* Layer, double rate);
+void ConjugateGradient(pFunc Derivative, CLayer* Layer, double rate);
 
 #endif // OPtiSOLVER_H

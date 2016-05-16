@@ -26,7 +26,8 @@ enum SOLVER_LIST_{
 };
 
 typedef double (*pFunc)(double);
-typedef void (*pSolver)(pFunc, CLayer*, double, Matrix);
+typedef void (*pSolver)(pFunc, CLayer*, double);
+typedef void (*ppSolver) (CLayer*, double);
 
 typedef struct ActiveFunc_
 {
