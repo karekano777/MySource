@@ -1,74 +1,60 @@
-//main.cpp
-
-#include "ECMINERMLP.h"
+// main.cpp
 
 #include <iostream>
 
+#include "Matrix.h"
+#include "MLP.h"
+
 int main(int arg, char* argv)
 {
-	FILE *fp = NULL;
+	CMLP MLP;
 
-	// File Read - XData
-	int nXVar = 0;
-	int nXSize = 0;
+	// setting
+	MLP.m_nInputs = 3;
+	MLP.m_nPatterns = 4;
+	MLP.m_nHidden = 4;
+	MLP.m_nEpochs = 500;
+	MLP.LR_IH = 0.7;
+	MLP.LR_HO = 0.07;
 
-	fp = fopen("XDataSet.txt", "r");
-	if (!fp)
-		return 1;
+	// set hidden layer active_function
+	MLP.setActiveFunction(TANH);
 
-	fscanf(fp, "%d %d", &nXSize, &nXVar);
+	//  generate matrix
+	MLP.genDataMatrix();
+	MLP.genHiddenValVector();
+	MLP.genWightsMatrix();
 
-	Matrix mXData;
-	mXData.ReSize(nXSize,nXVar);
+	// read in the data
+	// TrainSet1
+	MLP.m_pTrainInputs[0][0]  = 1.;
+	MLP.m_pTrainInputs[0][1]  = -1.;
+	MLP.m_pTrainInputs[0][2]  = 1.; //bias
+	MLP.m_pTrainOutput[0] = 1.;
 
-	double fvalX = 0.;
-	for (int iRowCnt = 1; iRowCnt<=nXSize; iRowCnt++)
-	{
-		for (int iColCnt = 1; iColCnt<=nXVar; iColCnt++)
-		{
-			fscanf(fp, "%lf", &fvalX);
-			mXData(iRowCnt, iColCnt) = fvalX;
-		}
-	}
-	fclose(fp);
-
-	// File Read - XData
-	int nYVar = 0;
-	int nYSize = 0;
-
-	fp = fopen("YDataSet.txt", "r");
-	if (!fp)
-		return 1;
-
-	fscanf(fp, "%d %d", &nYSize, &nYVar);
-
-	Matrix mYData;
-	mYData.ReSize(nYSize,nYVar);
-
-	double fvalY = 0.;
-	for (int iRowCnt = 1; iRowCnt<=nYSize; iRowCnt++)
-	{
-		for (int iColCnt = 1; iColCnt<=nYVar; iColCnt++)
-		{
-			fscanf(fp, "%lf", &fvalY);
-			mYData(iRowCnt, iColCnt) = fvalY;
-		}
-	}
-	fclose(fp);
-
-	CLayer Layer1;
-	CMultilayer CMLayer;
-
-	CMLayer.pushLayer(&Layer1);
-	CMLayer.setTrainingSets(mXData, mYData);
+	// TrainSet2
+	MLP.m_pTrainInputs[1][0]  = -1.;
+	MLP.m_pTrainInputs[1][1]  = 1.;
+	MLP.m_pTrainInputs[1][2]  = 1.; //bias
+	MLP.m_pTrainOutput[1] = 1.;
 	
-	CPerceptron Perceptron;
-	Perceptron.setActiveFunc(SIGMOD);
-	Perceptron.setSolver(SGD);
-	Perceptron.setCondition(0.0001, 10000000);
-	Perceptron.setLearningRate(0.1);
-	Perceptron.m_vMultilayer.push_back(CMLayer);
-	Perceptron.Learning();
+	// TrainSet3
+	MLP.m_pTrainInputs[2][0]  = 1.;
+	MLP.m_pTrainInputs[2][1]  = 1.;
+	MLP.m_pTrainInputs[2][2]  = 1.; //bias
+	MLP.m_pTrainOutput[2] = -1.;
+
+	// TrainSet4
+	MLP.m_pTrainInputs[3][0]  = -1.;
+	MLP.m_pTrainInputs[3][1]  = -1.;
+	MLP.m_pTrainInputs[3][2]  = 1.; //bias
+	MLP.m_pTrainOutput[3] = -1.;
+
+	// training
+	MLP.learing();
+
+	//training has finished display the results
+	MLP.displayResults();
 
 #if _DEBUG
 	std::cout << "Enter to continue..." << std::endl;
